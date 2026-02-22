@@ -1,0 +1,156 @@
+-- Create Enums
+CREATE TYPE gender_enum AS ENUM ('male', 'female', 'other');
+CREATE TYPE relationship_type_enum AS ENUM ('marriage', 'biological_child', 'adopted_child');
+CREATE TYPE user_role_enum AS ENUM ('admin', 'member');
+
+-- Create Tables
+
+-- PROFILES (Users)
+CREATE TABLE profiles (
+  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  role user_role_enum DEFAULT 'member' NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- PERSONS
+CREATE TABLE persons (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  full_name TEXT NOT NULL,
+  gender gender_enum NOT NULL,
+  birth_year INT,
+  birth_month INT,
+  birth_day INT,
+  death_year INT,
+  death_month INT,
+  death_day INT,
+  is_deceased BOOLEAN NOT NULL DEFAULT FALSE,
+  is_in_law BOOLEAN NOT NULL DEFAULT FALSE,
+  avatar_url TEXT,
+  note TEXT,
+  
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- PERSON_DETAILS_PRIVATE
+CREATE TABLE person_details_private (
+  person_id UUID REFERENCES persons(id) ON DELETE CASCADE PRIMARY KEY,
+  phone_number TEXT,
+  occupation TEXT,
+  current_residence TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RELATIONSHIPS
+CREATE TABLE relationships (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  type relationship_type_enum NOT NULL,
+  person_a UUID REFERENCES persons(id) ON DELETE CASCADE NOT NULL,
+  person_b UUID REFERENCES persons(id) ON DELETE CASCADE NOT NULL,
+  note TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  
+  -- Ensure unique relationships between pairs
+  UNIQUE(person_a, person_b, type)
+);
+
+-- RLS POLICIES
+
+-- Enable RLS
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE persons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE person_details_private ENABLE ROW LEVEL SECURITY;
+ALTER TABLE relationships ENABLE ROW LEVEL SECURITY;
+
+-- Helper function to check if user is admin
+CREATE OR REPLACE FUNCTION is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- PROFILES POLICIES
+-- Users can read their own profile
+CREATE POLICY "Users can view own profile" ON profiles
+  FOR SELECT USING (auth.uid() = id);
+
+-- Admins can view all profiles
+CREATE POLICY "Admins can view all profiles" ON profiles
+  FOR SELECT USING (is_admin());
+
+-- PERSONS POLICIES
+-- Everyone (Authenticated) can view persons
+CREATE POLICY "Enable read access for authenticated users" ON persons
+  FOR SELECT TO authenticated USING (true);
+
+-- Admins can insert/update/delete persons
+CREATE POLICY "Admins can insert persons" ON persons
+  FOR INSERT TO authenticated WITH CHECK (is_admin());
+
+CREATE POLICY "Admins can update persons" ON persons
+  FOR UPDATE TO authenticated USING (is_admin());
+
+CREATE POLICY "Admins can delete persons" ON persons
+  FOR DELETE TO authenticated USING (is_admin());
+
+-- PERSON_DETAILS_PRIVATE POLICIES
+-- Admins can view private details
+CREATE POLICY "Admins can view private details" ON person_details_private
+  FOR SELECT TO authenticated USING (is_admin());
+
+-- Admins can manage private details
+CREATE POLICY "Admins can manage private details" ON person_details_private
+  FOR ALL TO authenticated USING (is_admin());
+
+-- RELATIONSHIPS POLICIES
+CREATE POLICY "Enable read access for authenticated users" ON relationships
+  FOR SELECT TO authenticated USING (true);
+
+CREATE POLICY "Admins can manage relationships" ON relationships
+  FOR ALL TO authenticated USING (is_admin());
+
+-- Trigger to create profile on signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, role)
+  VALUES (new.id, 'member');
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+-- STORAGE POLICIES
+
+-- Ensure the 'avatars' bucket exists and is public
+INSERT INTO storage.buckets (id, name, public) VALUES ('avatars', 'avatars', true) ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- Allow public access for viewing avatars
+CREATE POLICY "Avatar images are publicly accessible."
+  ON storage.objects FOR SELECT
+  USING ( bucket_id = 'avatars' );
+
+-- Allow authenticated users to upload new avatars
+CREATE POLICY "Users can upload avatars."
+  ON storage.objects FOR INSERT
+  WITH CHECK ( bucket_id = 'avatars' AND auth.role() = 'authenticated' );
+
+-- Allow authenticated users to update existing avatars
+CREATE POLICY "Users can update avatars."
+  ON storage.objects FOR UPDATE
+  USING ( bucket_id = 'avatars' AND auth.role() = 'authenticated' );
+
+-- Allow authenticated users to delete avatars
+CREATE POLICY "Users can delete avatars."
+  ON storage.objects FOR DELETE
+  USING ( bucket_id = 'avatars' AND auth.role() = 'authenticated' );
+
