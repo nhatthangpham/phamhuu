@@ -7,7 +7,7 @@ export default function LoadingComponent() {
         <div className="relative">
           <div className="absolute inset-0 bg-amber-200/50 rounded-full blur-xl animate-pulse"></div>
           <div className="relative bg-white p-4 rounded-2xl shadow-sm border border-stone-100">
-            <Loader2 className="w-8 h-8 text-amber-600 animate-spin" />
+            <Loader2 className="size-8 text-amber-600 animate-spin" />
           </div>
         </div>
         <p className="text-stone-500 font-medium animate-pulse">
