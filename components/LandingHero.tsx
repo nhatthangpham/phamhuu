@@ -7,7 +7,7 @@ import {
   ShieldCheck,
   Sparkles,
   Users,
-  BookOpen, // Đã thêm icon quyển sách
+  BookOpen, // Anh thêm dòng này vào đây
 } from "lucide-react";
 import Link from "next/link";
 
