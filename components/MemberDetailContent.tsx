@@ -11,6 +11,7 @@ import {
 import { motion, Variants } from "framer-motion";
 import { Briefcase, Info, Leaf, MapPin, Phone, Users } from "lucide-react";
 import Image from "next/image";
+import { FemaleIcon, MaleIcon } from "./GenderIcons";
 
 interface MemberDetailContentProps {
   person: Person;
@@ -61,27 +62,47 @@ export default function MemberDetailContent({
 
         <motion.div
           variants={itemVariants}
-          className={`absolute -bottom-12 sm:-bottom-16 left-6 sm:left-8 h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 sm:border-[6px] border-white flex items-center justify-center text-3xl sm:text-4xl font-bold text-white overflow-hidden shadow-xl shrink-0 z-10
-           ${
-             person.gender === "male"
-               ? "bg-linear-to-br from-sky-400 to-sky-700"
-               : person.gender === "female"
-                 ? "bg-linear-to-br from-rose-400 to-rose-700"
-                 : "bg-linear-to-br from-stone-400 to-stone-600"
-           }`}
+          className="absolute -bottom-12 sm:-bottom-16 left-6 sm:left-8 z-10"
         >
-          {person.avatar_url ? (
-            <Image
-              unoptimized
-              src={person.avatar_url}
-              alt={person.full_name}
-              width={128}
-              height={128}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <DefaultAvatar gender={person.gender} />
-          )}
+          <div
+            className={`h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 sm:border-[6px] border-white flex items-center justify-center text-3xl sm:text-4xl font-bold text-white overflow-hidden shadow-xl shrink-0
+             ${
+               person.gender === "male"
+                 ? "bg-linear-to-br from-sky-400 to-sky-700"
+                 : person.gender === "female"
+                   ? "bg-linear-to-br from-rose-400 to-rose-700"
+                   : "bg-linear-to-br from-stone-400 to-stone-600"
+             }`}
+          >
+            {person.avatar_url ? (
+              <Image
+                unoptimized
+                src={person.avatar_url}
+                alt={person.full_name}
+                width={128}
+                height={128}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <DefaultAvatar gender={person.gender} />
+            )}
+          </div>
+          {/* Gender Indicator Icon */}
+          <div
+            className={`absolute bottom-1 right-1 sm:bottom-2 sm:right-2 size-6 sm:size-8 rounded-full ring-2 sm:ring-4 ring-white shadow-md flex items-center justify-center ${
+              person.gender === "male"
+                ? "bg-sky-100 text-sky-600"
+                : person.gender === "female"
+                  ? "bg-rose-100 text-rose-600"
+                  : "bg-stone-100 text-stone-600"
+            }`}
+          >
+            {person.gender === "male" ? (
+              <MaleIcon className="size-4 sm:size-5" />
+            ) : person.gender === "female" ? (
+              <FemaleIcon className="size-4 sm:size-5" />
+            ) : null}
+          </div>
         </motion.div>
       </div>
 

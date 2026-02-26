@@ -3,8 +3,24 @@
 import { Person } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown, Search } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useDashboard } from "./DashboardContext";
+import DefaultAvatar from "./DefaultAvatar";
+import { FemaleIcon, MaleIcon } from "./GenderIcons";
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const getGenderStyle = (gender: string) => {
+  if (gender === "male") return "bg-sky-100 text-sky-600";
+  if (gender === "female") return "bg-rose-100 text-rose-600";
+  return "bg-stone-100 text-stone-600";
+};
+
+const getAvatarBg = (gender: string) => {
+  if (gender === "male") return "bg-linear-to-br from-sky-400 to-sky-700";
+  if (gender === "female") return "bg-linear-to-br from-rose-400 to-rose-700";
+  return "bg-linear-to-br from-stone-400 to-stone-600";
+};
 
 export default function RootSelector({
   persons,
@@ -22,9 +38,9 @@ export default function RootSelector({
   // Default to finding the current root person
   const currentRootPerson = persons.find((p) => p.id === currentRootId);
 
-  const filteredPersons = persons.filter((p) =>
-    p.full_name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredPersons = persons
+    .filter((p) => p.full_name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .slice(0, 20);
 
   const handleSelect = (personId: string) => {
     setRootId(personId);
@@ -47,22 +63,62 @@ export default function RootSelector({
   }, []);
 
   return (
-    <div className="relative w-full sm:w-64" ref={dropdownRef}>
+    <div className="relative w-full sm:w-72" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between bg-white/60 backdrop-blur-md border rounded-xl px-3.5 py-2.5 text-sm shadow-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500/20 group
+        className={`w-full flex items-center gap-3 bg-white/60 backdrop-blur-md border rounded-xl px-3 py-2 text-sm shadow-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500/20 group
           ${isOpen ? "border-amber-300 bg-white shadow-md ring-2 ring-amber-500/10" : "border-stone-200/60 hover:border-amber-300 hover:bg-white/90 hover:shadow-md"}`}
       >
-        <span className="truncate text-stone-800 font-medium select-none">
-          Gốc:{" "}
-          {currentRootPerson ? currentRootPerson.full_name : "Chọn người..."}
-        </span>
+        <div className="relative shrink-0">
+          <div
+            className={`size-8 rounded-full flex items-center justify-center text-xs font-bold text-white overflow-hidden ring-2 ring-white shadow-xs
+            ${currentRootPerson ? getAvatarBg(currentRootPerson.gender) : "bg-stone-100 text-stone-400"}`}
+          >
+            {currentRootPerson ? (
+              currentRootPerson.avatar_url ? (
+                <Image
+                  unoptimized
+                  src={currentRootPerson.avatar_url}
+                  alt={currentRootPerson.full_name}
+                  width={32}
+                  height={32}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <DefaultAvatar gender={currentRootPerson.gender} />
+              )
+            ) : (
+              "?"
+            )}
+          </div>
+          {currentRootPerson && (
+            <div
+              className={`absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full ring-2 ring-white shadow-xs flex items-center justify-center ${getGenderStyle(currentRootPerson.gender)}`}
+            >
+              {currentRootPerson.gender === "male" ? (
+                <MaleIcon className="size-2.5" />
+              ) : currentRootPerson.gender === "female" ? (
+                <FemaleIcon className="size-2.5" />
+              ) : null}
+            </div>
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0 text-left">
+          <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest leading-none mb-0.5">
+            Gốc hiển thị
+          </p>
+          <p className="truncate text-stone-800 font-semibold select-none leading-tight">
+            {currentRootPerson ? currentRootPerson.full_name : "Chọn người..."}
+          </p>
+        </div>
+
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
           <ChevronDown
-            className={`size-4 transition-colors ${isOpen ? "text-amber-600" : "text-stone-400 group-hover:text-stone-600"}`}
+            className={`size-4 shrink-0 transition-colors ${isOpen ? "text-amber-600" : "text-stone-400 group-hover:text-stone-600"}`}
           />
         </motion.div>
       </button>
@@ -98,18 +154,55 @@ export default function RootSelector({
                       <button
                         key={person.id}
                         onClick={() => handleSelect(person.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 text-sm rounded-lg transition-all duration-200 group/item
+                        className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-all duration-200 group/item
                           ${
                             isSelected
                               ? "bg-amber-50 text-amber-900 border border-amber-200/50 shadow-sm"
                               : "text-stone-700 hover:bg-stone-100/80 border border-transparent"
                           }`}
                       >
-                        <span
-                          className={`truncate ${isSelected ? "font-semibold" : "font-medium group-hover/item:text-stone-900"}`}
-                        >
-                          {person.full_name}
-                        </span>
+                        <div className="relative shrink-0">
+                          <div
+                            className={`size-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white overflow-hidden ring-1 ring-white shadow-xs
+                            ${getAvatarBg(person.gender)}`}
+                          >
+                            {person.avatar_url ? (
+                              <Image
+                                unoptimized
+                                src={person.avatar_url}
+                                alt={person.full_name}
+                                width={32}
+                                height={32}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <DefaultAvatar gender={person.gender} />
+                            )}
+                          </div>
+                          <div
+                            className={`absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full ring-1 ring-white shadow-xs flex items-center justify-center ${getGenderStyle(person.gender)}`}
+                          >
+                            {person.gender === "male" ? (
+                              <MaleIcon className="size-2.5" />
+                            ) : person.gender === "female" ? (
+                              <FemaleIcon className="size-2.5" />
+                            ) : null}
+                          </div>
+                        </div>
+
+                        <div className="flex-1 min-w-0 text-left">
+                          <p
+                            className={`truncate ${isSelected ? "font-bold" : "font-medium group-hover/item:text-stone-900"}`}
+                          >
+                            {person.full_name}
+                          </p>
+                          {person.generation != null && (
+                            <p className="text-[10px] text-stone-400 font-medium">
+                              Đời thứ {person.generation}
+                            </p>
+                          )}
+                        </div>
+
                         {isSelected && (
                           <Check className="size-4 text-amber-600 shrink-0" />
                         )}
@@ -137,3 +230,4 @@ export default function RootSelector({
     </div>
   );
 }
+
