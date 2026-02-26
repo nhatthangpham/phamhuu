@@ -94,7 +94,7 @@ Nếu cần thiết, bạn có thể chỉ định một người dúng làm `ad
 
 ## Đóng góp (Contributing)
 
-Dự án này là mã nguồn mở, hoan nghênh mọi đóng góp, báo cáo lỗi (issues) và yêu cầu kéo sửa đổi (pull requests) để phát triển ứng dụng ngày càng tốt hơn.
+Dự án này là mã nguồn mở, hoan nghênh mọi đóng góp, báo cáo lỗi (issues) và yêu cầu sửa đổi (pull requests) để phát triển ứng dụng ngày càng tốt hơn.
 
 ## Giấy phép (License)
 
