@@ -63,7 +63,7 @@ export default function LandingHero({ siteName }: LandingHeroProps) {
 
           <p className="text-lg sm:text-xl md:text-2xl text-stone-600 max-w-2xl mx-auto leading-relaxed font-light">
             Gìn giữ và lưu truyền những giá trị, cội nguồn và truyền thống tốt
-            đẹp của dòng họ cho các thế hệ mai sau.
+            đẹp của dòng họ Phạm Hữu cho các thế hệ mai sau.
           </p>
         </motion.div>
 
