@@ -63,7 +63,7 @@ export default function LandingHero({ siteName }: LandingHeroProps) {
 
           <p className="text-lg sm:text-xl md:text-2xl text-stone-600 max-w-2xl mx-auto leading-relaxed font-light">
             Gìn giữ và lưu truyền những giá trị, cội nguồn và truyền thống tốt
-            đẹp của dòng họ Phạm Hữu cho các thế hệ mai sau.
+            đẹp của dòng họ cho các thế hệ mai sau.
           </p>
         </motion.div>
 
@@ -84,9 +84,9 @@ export default function LandingHero({ siteName }: LandingHeroProps) {
             </span>
           </Link>
 
-          {/* NÚT PHẢ KÝ (EBOOK HEYZINE) */}
+          {/* NÚT PHẢ KÝ (TRỎ VỀ ĐƯỜNG DẪN /PHAKY VIẾT LIỀN) */}
           <Link
-            href="/pha-ky"
+            href="/phaky"
             className="group inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 sm:py-5 text-base sm:text-lg font-bold text-stone-900 bg-white border border-stone-200 hover:bg-stone-50 hover:border-stone-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 active:translate-y-0 w-full sm:w-auto relative"
           >
             <span className="relative z-10 flex items-center gap-3">
