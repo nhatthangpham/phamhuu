@@ -7,7 +7,7 @@ import {
   ShieldCheck,
   Sparkles,
   Users,
-  BookOpen, // Anh thêm dòng này vào đây
+  BookOpen,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -83,7 +83,60 @@ export default function LandingHero({ siteName }: LandingHeroProps) {
             </span>
           </Link>
 
-          {/* NÚT ĐỌC PHẢ KÝ (TRỎ VỀ /PHAKY) */}
+          {/* NÚT PHẢ KÝ (TRỎ VỀ /PHAKY) */}
           <Link
             href="/phaky"
-            className="group inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 sm:py-5 text-base sm:text-lg font-bold text-stone-900 bg-white border border-stone-200 hover:bg-stone-50 hover:border-stone-300 rounded-2xl shadow
+            className="group inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 sm:py-5 text-base sm:text-lg font-bold text-stone-900 bg-white border border-stone-200 hover:bg-stone-50 hover:border-stone-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 active:translate-y-0 w-full sm:w-auto relative"
+          >
+            <span className="relative z-10 flex items-center gap-3">
+              <BookOpen className="size-5 text-amber-700" />
+              Đọc Phả Ký (Ebook)
+            </span>
+          </Link>
+        </motion.div>
+
+        <motion.div
+          className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-left border-t border-stone-200/50 relative"
+          variants={staggerContainer}
+        >
+          {[
+            {
+              icon: <Users className="size-6 text-amber-700" />,
+              title: "Quản lý Thành viên",
+              desc: "Cập nhật thông tin chi tiết, tiểu sử và hình ảnh của từng thành viên trong dòng họ một cách nhanh chóng và bảo mật.",
+            },
+            {
+              icon: <Network className="size-6 text-amber-700" />,
+              title: "Sơ đồ Sáng tạo",
+              desc: "Xem trực quan sơ đồ phả hệ, thế hệ và mối quan hệ gia đình với giao diện cây hiện đại, dễ thao tác.",
+            },
+            {
+              icon: <ShieldCheck className="size-6 text-amber-700" />,
+              title: "Bảo mật Tối đa",
+              desc: "Dữ liệu riêng tư như số điện thoại, quê quán được phân quyền chặt chẽ, bảo vệ an toàn trên hệ thống đám mây.",
+            },
+          ].map((feature, idx) => (
+            <motion.div
+              key={idx}
+              variants={fadeIn}
+              whileHover={{ y: -5 }}
+              className="bg-white/70 backdrop-blur-xl p-8 rounded-3xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:bg-white transition-all duration-500 flex flex-col items-start group relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-amber-100/50 to-transparent rounded-bl-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+              <div className="p-3.5 bg-white rounded-2xl mb-6 shadow-sm ring-1 ring-stone-100 group-hover:scale-110 group-hover:shadow-md transition-all duration-300 relative z-10">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-stone-800 mb-3 font-serif relative z-10 group-hover:text-amber-900 transition-colors">
+                {feature.title}
+              </h3>
+              <p className="text-stone-600 text-base leading-relaxed relative z-10">
+                {feature.desc}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.div>
+    </>
+  );
+}
