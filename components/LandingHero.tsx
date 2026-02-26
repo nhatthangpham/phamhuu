@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Sparkles,
   Users,
+  BookOpen, // Thêm icon quyển sách cho nút Phả ký
 } from "lucide-react";
 import Link from "next/link";
 
@@ -73,19 +74,31 @@ export default function LandingHero({ siteName }: LandingHeroProps) {
           {/* Subtle glow behind the button */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-16 bg-amber-500/30 blur-2xl rounded-full z-0 hidden sm:block"></div>
 
+          {/* NÚT ĐĂNG NHẬP CHÍNH */}
           <Link
             href="/login"
             className="group inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 sm:py-5 text-base sm:text-lg font-bold text-white bg-stone-900 border border-stone-800 hover:bg-stone-800 hover:border-stone-700 rounded-2xl shadow-xl shadow-stone-900/10 hover:shadow-2xl hover:shadow-stone-900/20 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 w-full sm:w-auto overflow-hidden relative"
           >
             <span className="relative z-10 flex items-center gap-3">
-              Đăng nhập để xem thông tin
+              Đăng nhập xem sơ đồ
               <ArrowRight className="size-5 group-hover:translate-x-1.5 transition-transform" />
+            </span>
+          </Link>
+
+          {/* NÚT PHẢ KÝ MỚI THÊM VÀO */}
+          <Link
+            href="/pha-ky"
+            className="group inline-flex items-center justify-center gap-2 px-8 py-4 sm:px-10 sm:py-5 text-base sm:text-lg font-bold text-stone-900 bg-white border border-stone-200 hover:bg-stone-50 hover:border-stone-300 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 active:translate-y-0 w-full sm:w-auto relative"
+          >
+            <span className="relative z-10 flex items-center gap-3">
+              <BookOpen className="size-5 text-amber-700" />
+              Đọc Phả Ký (Ebook)
             </span>
           </Link>
         </motion.div>
 
         <motion.div
-          className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-left  border-t border-stone-200/50 relative"
+          className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-left border-t border-stone-200/50 relative"
           variants={staggerContainer}
         >
           {[
