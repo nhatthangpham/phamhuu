@@ -78,6 +78,18 @@ bun run dev
 
 Sau khi ứng dụng khởi chạy, hãy truy cập `http://localhost:3000` trên trình duyệt.
 
+### 5. Triển khai lên Vercel & Netlify
+
+Cách nhanh nhất để dùng thử nhanh là sử dụng các nền tảng Cloud (miễn phí cho cá nhân).
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhomielab%2Fgiapha-os&env=SITE_NAME,NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY)
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/homielab/giapha-os)
+
+1. Nhấn nút **Deploy** ở trên.
+2. Kết nối với tài khoản GitHub và chọn repo này.
+3. Trong phần cấu hình, hãy thêm các **Environment Variables** tương tự như hướng dẫn ở mục [Thiết lập Biến môi trường](#2-thiết-lập-biến-môi-trường). Hãy lấy các thông tin này từ project Supabase của bạn.
+
 ## Hướng dẫn Quản lý Người dùng & Cấp quyền Admin
 
 ### 1. Tài khoản Admin Đầu tiên
